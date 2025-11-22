@@ -20,6 +20,11 @@ else
   tailscale up --advertise-exit-node --hostname $INSTANCE_NAME_ $LOGIN_SERVER 
 fi
 
+if [ -n "$IP_ADGUARD" ]; then
+  iptables -t nat -A PREROUTING -i tailscale0 -p udp --dport 53 -j DNAT --to-destination $IP_ADGUARD
+  iptables -t nat -A PREROUTING -i tailscale0 -p tcp --dport 53 -j DNAT --to-destination $IP_ADGUARD
+fi
+
 apk add mtr curl prometheus-node-exporter tinyproxy
 
 cat <<EOF > /etc/tinyproxy.conf

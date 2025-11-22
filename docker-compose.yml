@@ -17,6 +17,7 @@ services:
     environment:
       - TAILSCALE_UP_LOGIN_SERVER=${TAILSCALE_UP_LOGIN_SERVER}
       - IP_NORDVPN=${IP_NORDVPN}
+      - IP_ADGUARD=${IP_ADGUARD}
       - INSTANCE_NAME=${INSTANCE_NAME}
     cap_add:
       - net_admin
@@ -37,6 +38,9 @@ services:
     entrypoint: [
       '/scripts/nordvpn_up.sh'
     ]
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     restart: always
     sysctls:
       - net.ipv4.ip_forward=1
@@ -58,10 +62,25 @@ services:
       tailnord-net:
         ipv4_address: ${IP_NORDVPN}
 
+  adguard:
+    image: adguard/adguardhome:latest
+    container_name: tailnord-adguard-${INSTANCE_NAME}
+    hostname: tailnord-adguard
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+      - "53:53/tcp"
+      - "53:53/udp"
+    volumes:
+      - "./adguard/workdir:/opt/adguardhome/work"
+      - "./adguard/conf:/opt/adguardhome/conf"
+    networks:
+      tailnord-net:
+        ipv4_address: ${IP_ADGUARD}
+
 networks:
   tailnord-net:
     enable_ipv6: false
     ipam:
       config:
         - subnet: ${IP_SUBNET}
-
