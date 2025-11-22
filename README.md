@@ -1,4 +1,7 @@
 # tailscale-nordvpn
+
+[English](README.md) | [日本語](README.ja.md)
+
 Create a dockerized Tailscale exit node with NordVPN's exit nodes.
 
 This project will create two docker containers. One for Tailscale, and another for NordVPN. The Tailscale instance will advertise as an exit node, and use the NordVPN container as an egress route.

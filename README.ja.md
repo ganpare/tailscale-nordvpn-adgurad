@@ -1,5 +1,7 @@
 # tailscale-nordvpn
 
+[English](README.md) | [日本語](README.ja.md)
+
 NordVPNのexit nodeを使用したDockerコンテナ化されたTailscaleexit nodeを作成します。
 
 このプロジェクトは2つのDockerコンテナを作成します。1つはTailscale用、もう1つはNordVPN用です。Tailscaleインスタンスはexit nodeとしてアドバタイズし、NordVPNコンテナを出口ルートとして使用します。
