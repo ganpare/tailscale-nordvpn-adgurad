@@ -1,10 +1,10 @@
-# tailscale-nordvpn
+# tailscale-nordvpn-adguard
 
 [English](README.md) | [日本語](README.ja.md)
 
-Create a dockerized Tailscale exit node with NordVPN's exit nodes.
+Create a dockerized Tailscale exit node with NordVPN's exit nodes and AdGuard Home integration.
 
-This project will create two docker containers. One for Tailscale, and another for NordVPN. The Tailscale instance will advertise as an exit node, and use the NordVPN container as an egress route.
+This project will create three docker containers: Tailscale, NordVPN, and AdGuard Home. The Tailscale instance will advertise as an exit node, use the NordVPN container as an egress route, and forward DNS queries to AdGuard Home for ad-blocking and privacy.
 
 ## Requirements
 * A docker host, and docker build tools.

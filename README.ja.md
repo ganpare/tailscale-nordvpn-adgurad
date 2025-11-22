@@ -1,10 +1,10 @@
-# tailscale-nordvpn
+# tailscale-nordvpn-adguard
 
 [English](README.md) | [日本語](README.ja.md)
 
-NordVPNのexit nodeを使用したDockerコンテナ化されたTailscaleexit nodeを作成します。
+NordVPNのexit nodeとAdGuard Home統合を使用したDockerコンテナ化されたTailscale exit nodeを作成します。
 
-このプロジェクトは2つのDockerコンテナを作成します。1つはTailscale用、もう1つはNordVPN用です。Tailscaleインスタンスはexit nodeとしてアドバタイズし、NordVPNコンテナを出口ルートとして使用します。
+このプロジェクトは3つのDockerコンテナを作成します：Tailscale、NordVPN、AdGuard Home。Tailscaleインスタンスはexit nodeとしてアドバタイズし、NordVPNコンテナを出口ルートとして使用し、DNSクエリをAdGuard Homeに転送して広告ブロックとプライバシー保護を実現します。
 
 ## このフォークでの拡張機能
 
