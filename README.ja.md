@@ -246,6 +246,35 @@ tailscale set --exit-node-allow-lan-access=true
 
 この設定により、ローカルネットワーク宛のトラフィックはVPNをバイパスし、直接ルーティングされます。
 
+### VPN制限サイトや広告ブロック拒否サイトへのアクセス
+
+**症状**: Exit Nodeを使用すると、一部のサイトが正常に動作しない（VPNをブロックするサービス、広告ブロッカーを拒否するサイトなど）
+
+**原因**: Exit Nodeを使用すると、すべてのトラフィックがNordVPN経由となり、DNSクエリもAdGuard Homeでフィルタリングされるため
+
+**解決方法**: クライアントデバイスで一時的にExit Nodeを無効化する
+
+**Windows/Mac/Linux（GUI）**:
+1. Tailscaleアプリを開く
+2. Exit Nodeメニューをクリック
+3. **"None"** または **"Exit nodeを無効化"** を選択
+
+**Linux/CLI**:
+```bash
+tailscale set --exit-node=
+```
+
+**Exit Nodeを再度有効にする**:
+```bash
+tailscale set --exit-node=us-sfo
+# または INSTANCE_NAME で設定したホスト名を使用
+```
+
+**注意**: Exit Nodeを無効化すると:
+- トラフィックは直接インターネットに接続（NordVPN経由なし）
+- AdGuard Homeもバイパスされる（広告ブロックなし）
+- 通常のISP接続とDNSサーバーを使用
+
 ### ログの確認
 
 ```bash

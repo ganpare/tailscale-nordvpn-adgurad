@@ -71,3 +71,32 @@ tailscale set --exit-node-allow-lan-access=true
 3. Enable "Allow LAN access when using an exit node" in settings
 
 This setting allows local network traffic to bypass the VPN and route directly to your LAN.
+
+### Accessing VPN-Restricted or Ad-Blocker-Hostile Sites
+
+**Symptom**: Some sites don't work when using the exit node (e.g., VPN-blocking services, sites that reject ad-blocker users)
+
+**Cause**: When using the exit node, all traffic goes through NordVPN and AdGuard Home filters DNS queries
+
+**Solution**: Temporarily disable the exit node on your client device
+
+**Windows/Mac/Linux (GUI)**:
+1. Open the Tailscale app
+2. Click on the exit node menu
+3. Select **"None"** or **"Disable exit node"**
+
+**Linux/CLI**:
+```bash
+tailscale set --exit-node=
+```
+
+**To re-enable the exit node**:
+```bash
+tailscale set --exit-node=us-sfo
+# Or use the hostname you configured in INSTANCE_NAME
+```
+
+**Note**: When the exit node is disabled:
+- Your traffic goes directly to the internet (no NordVPN)
+- AdGuard Home is also bypassed (no ad-blocking)
+- You use your regular ISP connection and DNS servers
