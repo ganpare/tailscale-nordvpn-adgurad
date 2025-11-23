@@ -29,8 +29,14 @@ This project will create three docker containers: Tailscale, NordVPN, and AdGuar
 
 ### AdGuard integration
 1. After the stack is running, visit `http://<docker-host-ip>:3000` to finish the AdGuard Home setup. (The config/workdir is stored under `./adguard/`.)
-2. In the Tailscale admin dashboard go to **DNS** and add the exit node's Tailscale IP as a DNS server, or configure each device to use that IP. The exit node will forward DNS queries over to the AdGuard container (`IP_ADGUARD`), and AdGuard will answer them with your chosen blocklists.
-3. You can still reach the NordVPN exit node normally; only DNS is filtered through AdGuard while the rest of the traffic runs through NordVPN.
+2. In AdGuard, set upstream DNS servers to stable IPv4 resolvers (for example `1.1.1.1`, `8.8.8.8`) and consider lowering upstream timeouts from the default 20s if you see timeouts when combined with NordVPN.
+3. In the Tailscale admin dashboard, under **DNS**:
+   - Set a **Global nameserver** to the host’s Tailscale IP (for example `100.84.35.43` for `hide-deployment2`), not the Docker-internal `IP_ADGUARD` like `10.1.1.4`.
+   - Leave “Restrict to domain” empty to apply globally.
+   - Keep “Use with exit node” enabled so this nameserver is used even when clients route via the exit node.
+   With this setup, Tailscale DNS (100.100.100.100) will forward non-MagicDNS queries to AdGuard, while MagicDNS lookups are still handled by Tailscale.
+4. Alternatively, you can disable Tailscale DNS on clients and let the exit node’s iptables rules (`tailscale_up.sh`) DNAT plain UDP/TCP 53 traffic to `IP_ADGUARD`. Note that when Tailscale DNS is enabled, those iptables rules do not see the DNS traffic.
+5. You can still reach the NordVPN exit node normally; only DNS is filtered through AdGuard while the rest of the traffic runs through NordVPN.
 
 ### Removing host-installed AdGuard
 If you previously installed AdGuard Home on the host, stop and disable it so the container can own the ports:

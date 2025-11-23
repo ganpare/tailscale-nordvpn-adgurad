@@ -100,15 +100,31 @@ docker compose logs tailscale | grep "https://login.tailscale.com"
 
 ### 7. DNS設定（重要）
 
-Tailscale Admin Consoleの**DNS設定**：
+Tailscale Admin Consoleの**DNS設定**では、次のどちらかのパターンを選びます。
 
-**オプション1: 自動DNS転送（推奨）**
-- Global nameserversは**空のまま**
-- "Override DNS servers"は**OFF**
-- exit node使用時、iptablesが自動的にDNSをAdGuardにリダイレクトします
+**パターンA: Tailscale DNSを使ってAdGuardをグローバルなDNSにする（推奨）**
 
-**オプション2: 明示的なDNS設定**
-- 各デバイスでTailscaleアプリの"Use DNS settings"を有効化
+- **Global nameservers** に、このホスト（exit nodeが動いているホスト）の **Tailscale IP アドレス** を指定します（例: `100.84.35.43`）。  
+  - ここで指定するのは `10.1.1.4` のような Docker 内部アドレスではなく、`hide-deployment2` などホスト側の 100.x.x.x アドレスです。
+- 「Restrict to domain」は空欄のまま（全ドメインに適用）。
+- 「Use with exit node」は有効（ON）のままにします。
+- クライアント側では Tailscale アプリの「Use Tailscale DNS」（または同等の設定）を有効にしておきます。
+
+この構成では:
+
+- クライアント → Tailscale DNS (100.100.100.100)  
+  → MagicDNS 対象のドメインは Tailscale が直接解決  
+  → それ以外の通常のドメインは Global nameservers（= AdGuard）に転送  
+
+となり、MagicDNS と AdGuard の両方を同時に活かすことができます。
+
+**パターンB: Tailscale DNSを使わず、iptablesによる自動DNS転送を使う**
+
+- Global nameservers は空のまま。
+- 「Override DNS servers」や「Use Tailscale DNS」を無効（OFF）にし、クライアントのDNS設定は 1.1.1.1 など任意の外部DNSのままにします。
+- exit node 上の `tailscale_up.sh` が、`tailscale0` インターフェースに入ってきた UDP/TCP 53番ポートのトラフィックをすべて `IP_ADGUARD`（例: 10.1.1.4）に DNAT します。
+
+この構成では、クライアントから見たDNSサーバは変えずに、「exit node を通る DNS だけ」自動的に AdGuard に吸い込まれる動作になります。ただし、この場合は MagicDNS の一部挙動と相性が悪くなることがあります。
 
 ## exit nodeの使用方法
 
