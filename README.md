@@ -32,6 +32,12 @@ This project will create three docker containers: Tailscale, NordVPN, and AdGuar
 2. In AdGuard, set upstream DNS servers to stable IPv4 resolvers (for example `1.1.1.1`, `8.8.8.8`) and consider lowering upstream timeouts from the default 20s if you see timeouts when combined with NordVPN.
 3. In the Tailscale admin dashboard, under **DNS**:
    - Set a **Global nameserver** to the host’s Tailscale IP (for example `100.84.35.43` for `hide-deployment2`), not the Docker-internal `IP_ADGUARD` like `10.1.1.4`.
+
+## Security & Secrets
+
+- `.env` is untracked via `.gitignore`. Do not commit `NORDVPN_TOKEN` or any personal tokens.
+- Env backups `.env.backup*` and runtime data are ignored: `adguard/workdir/data/`, `tailscale/state/`.
+- For public forks, consider enabling GitHub Secret Scanning and using a local pre-commit hook to detect secrets before pushing.
    - Leave “Restrict to domain” empty to apply globally.
    - Keep “Use with exit node” enabled so this nameserver is used even when clients route via the exit node.
    With this setup, Tailscale DNS (100.100.100.100) will forward non-MagicDNS queries to AdGuard, while MagicDNS lookups are still handled by Tailscale.

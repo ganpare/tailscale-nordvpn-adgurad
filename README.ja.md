@@ -106,6 +106,12 @@ Tailscale Admin Consoleの**DNS設定**では、次のどちらかのパター�
 
 - **Global nameservers** に、このホスト（exit nodeが動いているホスト）の **Tailscale IP アドレス** を指定します（例: `100.84.35.43`）。  
   - ここで指定するのは `10.1.1.4` のような Docker 内部アドレスではなく、`hide-deployment2` などホスト側の 100.x.x.x アドレスです。
+
+## セキュリティと秘密情報の取り扱い
+
+- `.env` は `.gitignore` により追跡対象外です。`NORDVPN_TOKEN` を含む個人トークンはコミットしないでください。
+- 環境バックアップ（`.env.backup*`）とランタイムの状態/データは無視対象です：`adguard/workdir/data/`、`tailscale/state/`。
+- パブリックなフォークでは、GitHub の Secret Scanning を有効化し、ローカルの pre-commit で秘密検出を入れると安全です。
 - 「Restrict to domain」は空欄のまま（全ドメインに適用）。
 - 「Use with exit node」は有効（ON）のままにします。
 - クライアント側では Tailscale アプリの「Use Tailscale DNS」（または同等の設定）を有効にしておきます。
