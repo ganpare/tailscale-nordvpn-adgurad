@@ -1,1 +1,10 @@
 .env
+# Env backups
+.env.backup*
+
+# Runtime state/data directories
+adguard/workdir/data/
+tailscale/state/
+
+# Docker/compose local overrides
+docker-compose.override.yml
